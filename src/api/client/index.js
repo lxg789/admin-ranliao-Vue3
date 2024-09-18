@@ -47,7 +47,7 @@ export function sampleAdd(data) {
 // 删除客户来样
 export function sampleDelete(customerSampleIds) {
   return request({
-    url: '/customer/sample/' + customerSampleIds,
+    url: '/customer/sample/' + customerSampleIds.customerSampleIds,
     method: 'delete'
   })
 }

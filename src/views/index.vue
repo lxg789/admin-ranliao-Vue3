@@ -1,6 +1,6 @@
 <template>
   <div class="app-container home">
-    <IndexEchart></IndexEchart>
+    <IndexEchart :fileList="fileList" :key="imgKey"></IndexEchart>
     <div class="home-title mb10">客户来样</div>
     <div class="mb10">
       <el-button type="primary" size="small">执行</el-button>
@@ -28,11 +28,11 @@
           <!-- @blur="scope.row.fillerPrice = $event.target.value.trim()" -->
           </template>
         </el-table-column>
-        <el-table-column prop="processingCost" label="加工费" align="center" >
+        <el-table-column prop="workFee" label="加工费" align="center" >
           <template #default="scope">
             <el-input
              size="small"
-              v-model="scope.row.processingCost"
+              v-model="scope.row.workFee"
               placeholder=""
               class="priceInput"
               @blur="processingCostBlur($event,$index)"
@@ -51,14 +51,14 @@
     </div>
     <!-- 用户导入对话框 -->
     <el-dialog :title="upload.title" v-model="upload.open" width="400px" append-to-body>
-        <DocumentUpload @modelValue="listToString" />
+        <DocumentUpload @handleUploadSuccess="listToString" />
         <!-- <FileUpload /> -->
-        <template #footer>
+        <!-- <template #footer>
           <div class="dialog-footer">
               <el-button type="primary" @click="submitFileForm">确 定</el-button>
               <el-button @click="upload.open = false">取 消</el-button>
           </div>
-        </template>
+        </template> -->
     </el-dialog>
   </div>
 </template>
@@ -66,16 +66,20 @@
 <script setup>
 import IndexEchart from '@/components/IndexEcharts.vue'
 import { getToken } from "@/utils/auth";
+import { sampleDelete } from "@/api/client/index";
 const tableData = ref([
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-    batchNumber:2,
-    fillerPrice:'',
-    processingCost:'',
-  }
+  // {
+  //   date: '2016-05-03',
+  //   name: 'Tom',
+  //   address: 'No. 189, Grove St, Los Angeles',
+  //   batchNumber:2,
+  //   fillerPrice:'',
+  //   workFee:'',
+  //   id:'0000001',
+  // }
 ])
+const fileList=ref([]);
+const imgKey=ref(new Date().getTime())
 const upload = reactive({
   // 是否显示弹出层（用户导入）
   open: false,
@@ -102,9 +106,6 @@ const handleFileUploadProgress = (event, file, fileList) => {
 const handleFileSuccess = (response, file, fileList) => {
   upload.open = false;
   upload.isUploading = false;
-  console.log(response,'response')
-  console.log(file,'file')
-  console.log(fileList,'fileList')
 };
 /** 提交上传文件 */
 function submitFileForm() {
@@ -118,6 +119,38 @@ const processingCostBlur = (event) => {
 }
 const listToString = (val) => {
   console.log(val,'val')
+  tableData.value.push({
+    date: val.createTime,
+    name: val.code,
+    batchNumber:val.batchNumber,
+    fillerPrice:val.fillerPrice,
+    workFee:val.workFee,
+    customerSampleId:val.customerSampleId,
+  });
+  console.log(tableData.value,"")
+  const fileObj={
+    xData:[],
+    yData:[]
+  }
+  val.uvData.forEach((element,index) => {
+    if(index < 300){
+      fileObj.xData.push(element.x)
+      fileObj.yData.push(element.y)
+    }    
+  });
+  fileList.value.push(fileObj)
+  imgKey.value=new Date().getTime()
+}
+const handleDelete = (row) => {
+  console.log(row.name,'row')
+  let customerSampleIds = []
+  customerSampleIds.push(row.id)
+  // const customerSampleIdstr = JSON.stringify(customerSampleIds)
+  const customerSampleIdstr = customerSampleIds.toString()
+  console.log(customerSampleIdstr,'customerSampleIdstr')
+  sampleDelete({customerSampleIds:customerSampleIdstr}).then(res => {
+    console.log(res,'res')
+  })
 }
 </script>
 

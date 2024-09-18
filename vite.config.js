@@ -31,7 +31,8 @@ export default defineConfig(({ mode, command }) => {
       proxy: {
         // https://cn.vitejs.dev/config/#server-proxy
         '/dev-api': {
-          target: 'http://vue.ruoyi.vip/prod-api',
+          // target: 'http://vue.ruoyi.vip/prod-api',
+          target: 'https://6773d126.r7.cpolar.top',          
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/dev-api/, '')
         }

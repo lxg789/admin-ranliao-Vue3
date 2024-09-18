@@ -71,7 +71,7 @@ const props = defineProps({
   // 数量限制
   limit: {
     type: Number,
-    default: 1,
+    default: 2,
   },
   // 大小限制(MB)
   fileSize: {
@@ -96,7 +96,7 @@ const emit = defineEmits();
 const number = ref(0);
 const uploadList = ref([]);
 const baseUrl = import.meta.env.VITE_APP_BASE_API;
-const uploadFileUrl = ref(import.meta.env.VITE_APP_BASE_API + "/common/upload"); // 上传文件服务器地址
+const uploadFileUrl = ref(import.meta.env.VITE_APP_BASE_API + "/customer/sample/upload"); // 上传文件服务器地址
 const headers = ref({ Authorization: "Bearer " + getToken() });
 const fileList = ref([]);
 const showTip = computed(
@@ -124,6 +124,8 @@ watch(() => props.modelValue, val => {
 
 // 上传前校检格式和大小
 function handleBeforeUpload(file) {
+  console.log(file,'fileqian')
+  // emit('handleUploadSuccess',file)
   // 校检文件类型
   if (props.fileType.length) {
     const fileName = file.name.split('.');
@@ -162,6 +164,7 @@ function handleUploadSuccess(res, file) {
   if (res.code === 200) {
     uploadList.value.push({ name: res.fileName, url: res.fileName });
     uploadedSuccessfully();
+    emit('handleUploadSuccess',res.data)
   } else {
     number.value--;
     proxy.$modal.closeLoading();
