@@ -13,7 +13,7 @@ onMounted(() => {
   var option
   option = {
     title: {
-      text: '月工资展示'
+      text: '对比折线图'
     },
     tooltip: {
       trigger: 'axis'
