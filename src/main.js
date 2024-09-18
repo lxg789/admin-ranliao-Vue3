@@ -35,6 +35,8 @@ import RightToolbar from '@/components/RightToolbar'
 import Editor from "@/components/Editor"
 // 文件上传组件
 import FileUpload from "@/components/FileUpload"
+import DocumentUpload from "@/components/DocumentUpload"
+import selectSearchMore from "@/components/selectSearchMore"
 // 图片上传组件
 import ImageUpload from "@/components/ImageUpload"
 // 图片预览组件
@@ -61,6 +63,8 @@ app.component('DictTag', DictTag)
 app.component('Pagination', Pagination)
 app.component('TreeSelect', TreeSelect)
 app.component('FileUpload', FileUpload)
+app.component('DocumentUpload', DocumentUpload)
+app.component('selectSearchMore', selectSearchMore)
 app.component('ImageUpload', ImageUpload)
 app.component('ImagePreview', ImagePreview)
 app.component('RightToolbar', RightToolbar)
