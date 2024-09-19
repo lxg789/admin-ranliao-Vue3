@@ -1,7 +1,6 @@
 <template>
   <div id="container" style="width: 100%; height: 400px"></div>
 </template>
-
 <script setup>
 import * as echarts from 'echarts'
 import { toRefs } from 'vue';
@@ -18,37 +17,33 @@ const props = defineProps({
 const { fileList }=toRefs(props)
 const series=ref([]);
 onMounted(() => {
-  console.log(fileList.value,"fileList")
  
   fileList.value.forEach((item,i)=>{
      const itemList=[];
-    item.xData.forEach((ele,index)=>{
-   
-    itemList.push([ele, item.yData[index]])
-    
+    item.xData.forEach((ele,index)=>{   
+      itemList.push([ele, item.yData[index]])    
     })
+    const colorStr = generateRandomColors(1)
+    // generateRandomColors(i)
     series.value.push(
       {
         connectNulls: false,
         type: 'line',
-        name: '售后订单总额',
+        name: item.code,
         lineStyle:{
           width:2,
           type:"solid",
-          color: generateRandomColors(i)
+          color: colorStr
         },
         smooth: false,
        
         data:itemList,
-        // data:[[320, 0.3194239306605805],[220, 0.2194239306605805],[120, 0.1194239306605805],[420, 0.4194239306605805]],
-        
         showSymbol: false
       }
       
     )
     
   })
- console.log(series.value)
   var dom = document.getElementById('container')
   var myChart = echarts.init(dom, null, {
     renderer: 'canvas',
@@ -85,14 +80,14 @@ onMounted(() => {
         type: 'value',
         alignTicks: true
       },
-      {
-        type: 'value',
-        name: `单位：`,
-        nameTextStyle: {
-          color: '#22b8c8',
-          fontWeight: 'bold'
-        }
-      }
+      // {
+      //   type: 'value',
+      //   name:'',
+      //   nameTextStyle: {
+      //     color: '#22b8c8',
+      //     fontWeight: 'bold'
+      //   }
+      // }
     ],
     series:  series.value,
     

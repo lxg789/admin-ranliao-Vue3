@@ -1,21 +1,5 @@
 <template>
   <div class="upload-file">
-    <!-- <el-upload
-          ref="uploadRef"
-          :limit="1"
-          accept=".xlsx, .xls"
-          :headers="upload.headers"
-          :action="upload.url + '?updateSupport=' + upload.updateSupport"
-          :disabled="upload.isUploading"
-          :on-progress="handleFileUploadProgress"
-          :on-success="handleFileSuccess"
-          :auto-upload="false"
-          drag
-        >
-          <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        </el-upload> -->
-        <!-- multiple -->
         <el-upload      
           multiple
           :action="uploadFileUrl"
@@ -34,13 +18,6 @@
       <el-icon class="el-icon--upload"><upload-filled /></el-icon>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
     </el-upload>
-    <!-- 上传提示 -->
-    <!-- <div class="el-upload__tip" v-if="showTip">
-      请上传
-      <template v-if="fileSize"> 大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b> </template>
-      <template v-if="fileType"> 格式为 <b style="color: #f56c6c">{{ fileType.join("/") }}</b> </template>
-      的文件
-    </div> -->
     <!-- 文件列表 -->
     <transition-group class="upload-file-list el-upload-list el-upload-list--text" name="el-fade-in-linear" tag="ul">
       <li :key="file.uid" class="el-upload-list__item ele-upload-list__item-content" v-for="(file, index) in fileList">
@@ -52,14 +29,6 @@
         </div>
       </li>
     </transition-group>
-    <!-- <div class="el-upload-list__item">
-      <el-link :href="`${baseUrl}${file.url}`" :underline="false" target="_blank">
-          <span class="el-icon-document"> {{ getFileName(file.name) }} </span>
-        </el-link>
-        <div class="ele-upload-list__item-content-action">
-          <el-link :underline="false" @click="handleDelete(index)" type="danger">删除</el-link>
-        </div>
-    </div> -->
   </div>
 </template>
 
@@ -71,7 +40,7 @@ const props = defineProps({
   // 数量限制
   limit: {
     type: Number,
-    default: 2,
+    default: 50,
   },
   // 大小限制(MB)
   fileSize: {
@@ -124,8 +93,6 @@ watch(() => props.modelValue, val => {
 
 // 上传前校检格式和大小
 function handleBeforeUpload(file) {
-  console.log(file,'fileqian')
-  // emit('handleUploadSuccess',file)
   // 校检文件类型
   if (props.fileType.length) {
     const fileName = file.name.split('.');
@@ -164,6 +131,7 @@ function handleUploadSuccess(res, file) {
   if (res.code === 200) {
     uploadList.value.push({ name: res.fileName, url: res.fileName });
     uploadedSuccessfully();
+    // fileList.value = []
     emit('handleUploadSuccess',res.data)
   } else {
     number.value--;
@@ -186,8 +154,9 @@ function uploadedSuccessfully() {
     fileList.value = fileList.value.filter(f => f.url !== undefined).concat(uploadList.value);
     uploadList.value = [];
     number.value = 0;
-    emit("update:modelValue", listToString(fileList.value));
+    emit("update:modelValue", listToString(fileList.value));    
     proxy.$modal.closeLoading();
+    fileList.value = []
   }
 }
 
