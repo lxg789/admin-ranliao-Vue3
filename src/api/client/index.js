@@ -51,3 +51,24 @@ export function sampleDelete(customerSampleIds) {
     method: 'delete'
   })
 }
+
+// 配置保存
+export function saveClient(data) {
+  return request({
+    url: '/customer/sample',
+    method: 'put',
+    data: data
+  })
+}
+
+// 配置保存
+export function saveMoreClient(data) {
+  return request({
+    url: '/customer/sample/batchSave',
+    method: 'put',
+    data: data
+  })
+}
+
+
+
